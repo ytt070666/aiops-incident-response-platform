@@ -112,8 +112,3 @@ python -m pytest -q
 ## 演示材料
 
 `demo-assets/` 中包含本项目本地 Docker 运行时录制的 API 演示视频、知识库问答结果截图和 Swagger 接口文档截图。上传 GitHub 后可在仓库中直接展示；演示数据均为本地样例数据。
-
-## 简历描述建议
-
-**云网智能故障处置助手（个人项目）｜Python、FastAPI、Vue 3、SQLite、Docker**
-独立设计并实现云网告警管理、知识库检索与 AI 辅助诊断 API；实现 DeepSeek/Qwen 等兼容大模型的可配置调用与本地降级，支持 WAF、Linux、网络连通性告警的检索诊断与引用溯源；使用 Spring Boot 构建 MySQL/Redis 告警微服务，并通过 Vue 工作台、审计日志、GitHub Actions 自动测试和 Docker 容器化部署提升服务可维护性与稳定性。
