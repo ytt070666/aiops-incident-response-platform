@@ -1,0 +1,59 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_PATH: /app/data/assistant.db
+      LOG_LEVEL: INFO
+      LLM_PROVIDER: ${LLM_PROVIDER:-custom}
+      LLM_BASE_URL: ${LLM_BASE_URL:-}
+      LLM_MODEL: ${LLM_MODEL:-}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      DASHSCOPE_API_KEY: ${DASHSCOPE_API_KEY:-}
+      ALERT_SERVICE_URL: ${ALERT_SERVICE_URL:-http://alert-service:8081}
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+  mysql:
+    profiles: ["full"]
+    image: docker.m.daocloud.io/library/mysql:8.4
+    environment:
+      MYSQL_DATABASE: aiops
+      MYSQL_USER: aiops
+      MYSQL_PASSWORD: aiops_dev_password
+      MYSQL_ROOT_PASSWORD: root_dev_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - mysql-data:/var/lib/mysql
+  redis:
+    profiles: ["full"]
+    image: docker.m.daocloud.io/library/redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  alert-service:
+    profiles: ["full"]
+    build: ./alert-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/aiops?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: aiops
+      SPRING_DATASOURCE_PASSWORD: aiops_dev_password
+      SPRING_DATA_REDIS_HOST: redis
+      AIOPS_PYTHON_BASE_URL: http://api:8000
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+volumes:
+  mysql-data:

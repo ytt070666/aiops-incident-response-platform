@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.env
+data/*.db
+logs/*.log
+.playwright-cli/
+web-console/node_modules/
+web-console/dist/

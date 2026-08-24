@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: alert-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://mysql:3306/aiops?useUnicode=true&characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true}
+    username: ${SPRING_DATASOURCE_USERNAME:aiops}
+    password: ${SPRING_DATASOURCE_PASSWORD:aiops_dev_password}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:redis}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+  cache:
+    type: redis
+    redis:
+      time-to-live: 300s
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+server:
+  port: ${SERVER_PORT:8081}
+aiops:
+  python-base-url: ${AIOPS_PYTHON_BASE_URL:http://localhost:8000}
